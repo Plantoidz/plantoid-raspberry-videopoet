@@ -156,7 +156,10 @@ def get_text_to_speech_response(text, eleven_voice_id, callback=None):
     
     else:
 
-        raise Exception("Error: " + str(response.status_code))
+        status = response.json()['detail']['status']
+        message = response.json()['detail']['message']
+
+        raise Exception("Error: " + str(status) + ": "+ str(message))
 
 def compute_average(fragment, sample_width=2):
     """Compute the raw average of audio samples."""

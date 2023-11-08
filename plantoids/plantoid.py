@@ -124,6 +124,10 @@ class Plantony:
         print('stop background music')
         pygame.mixer.music.stop()
 
+    def get_voice_id(self):
+
+        return self.eleven_voice_id
+
     def welcome(self):
 
         print('Plantony Welcome!')

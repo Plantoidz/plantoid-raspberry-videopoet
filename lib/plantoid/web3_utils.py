@@ -82,6 +82,8 @@ def setup(
     failsafe=0,
 ):
     
+    print(infura_websock)
+    
     try:
 
         # create a web3 object
