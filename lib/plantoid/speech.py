@@ -9,6 +9,10 @@ import wave
 import audioop
 import struct
 
+from simpleaichat import AIChat
+from whisper_mic.whisper_mic import WhisperMic
+from elevenlabs import generate, stream, set_api_key
+
 import numpy as np
 
 from collections import deque
@@ -70,8 +74,11 @@ THRESHOLD = 150
 
 # Load environment variables from .env file
 load_dotenv()
-openai.api_key = os.environ.get("OPENAI")
-eleven_labs_api_key = os.environ.get("ELEVEN")
+
+OPENAI_API_KEY = os.environ.get("OPENAI")
+ELEVENLABS_API_KEY = os.environ.get("ELEVEN")
+
+set_api_key(ELEVENLABS_API_KEY)
 
 
 def GPTmagic(prompt, call_type='chat_completion'): 
@@ -120,7 +127,7 @@ def get_text_to_speech_response(text, eleven_voice_id, callback=None):
     headers = {
         "Accept": "audio/mpeg",
         "Content-Type": "application/json",
-        "xi-api-key": eleven_labs_api_key,
+        "xi-api-key": ELEVENLABS_API_KEY,
     }
 
     #eleven_voice_id = '21m00Tcm4TlvDq8ikWAM' # Rachel
@@ -414,4 +421,40 @@ def recognize_speech(filename):
 
         return usertext
     
+
+def listen_for_speech_whisper():
+
+    with ignoreStderr():
+        mic = WhisperMic()
+        utterance = mic.listen()
+        print(f"I heard: {utterance}")
+
+        return utterance
+    
+def get_chat_response(chat_personality, utterance):
+
+    # TODO: assess performance of instantiation
+    ai_chat = AIChat(system=chat_personality, api_key=OPENAI_API_KEY, model="gpt-4-1106-preview")
+
+    response = ai_chat(utterance)
+    print(f"I said: {response}")
+
+    return response
+    
+def stream_audio_response(response, voice_id, callback=None):
+
+    # generate audio stream   
+    audio_stream = generate(
+        text=f"{response}",
+        model="eleven_multilingual_v2",
+        voice=voice_id,
+        stream=True
+    )
+
+    # stop background music callback
+    if callback is not None:
+        callback()
+            
+    # stream audio
+    stream(audio_stream)
 

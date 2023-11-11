@@ -1,3 +1,5 @@
+import os
+
 def get_text_content():
 
     opening_lines = [
@@ -157,3 +159,8 @@ def get_sermon_prompt(
 def get_plantoid_sig(network, tID):
     plantoid_sig = "\n\nYou can reclaim your NFT by connecting to " + network.reclaim_url + " and pressing the Reveal button for seed #" + tID + " \n"
     return plantoid_sig
+
+def get_ai_chat_personality():
+
+    personality = open(os.getcwd()+"/prompt_context/glitch3.txt").read().strip()
+    return personality

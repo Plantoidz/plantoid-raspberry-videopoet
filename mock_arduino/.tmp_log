@@ -1,3 +1,3 @@
-2023/11/08 18:07:15 socat[2204851] N PTY is /dev/pts/5
-2023/11/08 18:07:15 socat[2204851] N PTY is /dev/pts/6
-2023/11/08 18:07:15 socat[2204851] N starting data transfer loop with FDs [6,6] and [8,8]
+2023/11/11 23:23:28 socat[11507] N PTY is /dev/pts/7
+2023/11/11 23:23:28 socat[11507] N PTY is /dev/pts/8
+2023/11/11 23:23:28 socat[11507] N starting data transfer loop with FDs [6,6] and [8,8]

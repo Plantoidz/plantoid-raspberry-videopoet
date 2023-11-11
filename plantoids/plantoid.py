@@ -46,6 +46,9 @@ class Plantony:
         # load the text content
         self.opening_lines, self.closing_lines, self.word_categories = get_text_content()
 
+        # load chat personality
+        self.chat_personality = get_ai_chat_personality()
+
         # Load the sounds
         self.acknowledgements = [
             os.getcwd()+"/media/hmm1.mp3",
@@ -153,19 +156,25 @@ class Plantony:
 
         self.send_serial_message("asleep")
 
-    def listen(self):
+    def listen(self, use_whisper=False):
 
         self.send_serial_message("listening")
 
-        audiofile = PlantoidSpeech.listen_for_speech()
+        if use_whisper:
+
+            audio = PlantoidSpeech.listen_for_speech_whisper()
+
+        else:
+
+            audio = PlantoidSpeech.listen_for_speech()
+
+            print("Plantony listen is returning the audiofile as:  " + audio)
 
         playsound(self.acknowledge())
 
-        print("Plantony listen is returning the audiofile as:  " + audiofile)
+        return audio
 
-        return audiofile
-
-    def respond(self, audio):
+    def respond(self, audio, use_whisper=False):
 
         def prompt_agent_and_respond(audio, callback):
             
@@ -183,20 +192,49 @@ class Plantony:
 
             agent_prompt = self.update_prompt()
 
-            # print("new prompt = " + new_prompt)
-
             # generate the response from the GPT model
             agent_message = PlantoidSpeech.GPTmagic(agent_prompt, call_type='chat_completion')
 
             # append the agent's turn to the latest round
             self.append_turn_to_round(self.AGENT, agent_message)
 
+            # get audio file from TTS repsonse
             audio_file = PlantoidSpeech.get_text_to_speech_response(agent_message, self.eleven_voice_id, callback=callback)
-            # shared_response_container["audio_file"] = audio_file
+
+            # Tsend speech signal
+            self.send_serial_message("speaking")
+
+            # play the audio file
             playsound(audio_file)
 
-            # TODO: figure out if this goes here or above
+        def prompt_agent_and_respond_whisper(audio, callback):
+            
+            # user text received from speech recognition
+            user_message = audio
+
+            print("I heard... " + user_message)
+
+            if len(user_message) == 0:
+                print('no text heard, using default text')
+                user_message = "Hmmmmm..."
+
+            # append the user's turn to the latest round
+            self.append_turn_to_round(self.USER, user_message)
+
+            # TODO: figure out what to do here
+            # agent_prompt = self.update_prompt()
+
+            # generate the response from the GPT model
+            agent_message = PlantoidSpeech.get_chat_response(self.chat_personality, audio)
+
+            # append the agent's turn to the latest round
+            self.append_turn_to_round(self.AGENT, agent_message)
+
+            # send serial message
             self.send_serial_message("speaking")
+
+            # stream audio response
+            PlantoidSpeech.stream_audio_response(agent_message, self.get_voice_id(), callback=callback)
 
         self.send_serial_message("thinking")
 
@@ -208,21 +246,16 @@ class Plantony:
         # play the background music
         self.play_background_music(background_music_path)
 
-        # prompt agent and respond
-        prompt_agent_and_respond(audio, self.stop_background_music)
+        # if use whisper
+        if use_whisper:
 
-        # create a thread to call the API
-        # thread = threading.Thread(target=prompt_agent_and_respond, args=(
-        #     audio,
-        #     after_elevenlabs_response,
-        #     shared_response_container,
-        # ))
+            # prompt agent and respond
+            prompt_agent_and_respond_whisper(audio, self.stop_background_music)
+        
+        else:
 
-        # # start the thread
-        # thread.start()
-
-        # # The script will continue to run while waiting for the API response
-        # thread.join()  # This line ensures the script waits for the API thread to complete before proceeding
+            # prompt agent and respond
+            prompt_agent_and_respond(audio, self.stop_background_music)
 
     def acknowledge(self):
 

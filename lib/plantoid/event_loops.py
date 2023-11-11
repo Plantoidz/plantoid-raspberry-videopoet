@@ -21,7 +21,7 @@ def arduino_event_listen(
     trigger_line,
     max_rounds=4,
     use_arduino=True,
-    interaction_mode='Touched',
+    interaction_mode='Default',
 ):
 
     if use_arduino:
@@ -52,7 +52,13 @@ def arduino_event_listen(
 
                         # Trigger plantony interaction
                         print("Button was pressed, Invoking Plantony!")
-                        plantony.trigger(interaction_mode, plantony, network, max_rounds=max_rounds)
+                        plantony.trigger(
+                            'Touched',
+                            plantony,
+                            network,
+                            interaction_mode=interaction_mode,
+                            max_rounds=max_rounds,
+                        )
 
                         # Clear the buffer after reading to ensure no old "button_pressed" events are processed.
                         ser.reset_input_buffer()
@@ -70,7 +76,13 @@ def arduino_event_listen(
     finally:
         ser.close()
 
-def invoke_plantony(plantony, network, max_rounds=4):
+def invoke_plantony(plantony, network, interaction_mode='Default', max_rounds=4):
+
+    if interaction_mode == 'Default':
+        use_whisper = False
+
+    else:
+        use_whisper = True
 
     print('plantony initiating...')
     plantony.welcome()
@@ -86,14 +98,14 @@ def invoke_plantony(plantony, network, max_rounds=4):
         print(len(plantony.rounds))
 
         print('plantony listening...')
-        audiofile = plantony.listen()
+        audio = plantony.listen(use_whisper=use_whisper)
 
         print('plantony responding...')
-        plantony.respond(audiofile)
+        plantony.respond(audio, use_whisper=use_whisper)
 
     # TODO: sub function without speech
     print('plantony listening...')
-    plantony.listen()
+    plantony.listen(use_whisper=use_whisper)
 
     print('plantony terminating...')
     plantony.terminate()
@@ -108,46 +120,46 @@ def invoke_plantony(plantony, network, max_rounds=4):
     plantony.reset_prompt()
 
 
-#ELEVENLABS
-set_api_key(ELEVENLABS_API_KEY)
+# #ELEVENLABS
+# set_api_key(ELEVENLABS_API_KEY)
 
-def invoke_plantony_EXP(plantony, network, max_rounds=4):
+# def invoke_plantony_EXP(plantony, network, max_rounds=4):
 
-    print('plantony initiating...')
-    plantony.welcome()
+#     print('plantony initiating...')
+#     plantony.welcome()
 
-    personality = open(os.getcwd()+"/prompt_context/glitch3.txt").read().strip()
-    ai = AIChat(system=personality, api_key=OPENAI_API_KEY, model="gpt-4-1106-preview")
+#     personality = open(os.getcwd()+"/prompt_context/glitch3.txt").read().strip()
+#     ai = AIChat(system=personality, api_key=OPENAI_API_KEY, model="gpt-4-1106-preview")
 
-	#WHISPER
-    with ignoreStderr():
-        mic = WhisperMic()
+# 	#WHISPER
+#     with ignoreStderr():
+#         mic = WhisperMic()
 
-    print('Iterating on Plantony n of rounds:', len(plantony.rounds), 'max rounds:', max_rounds)
+#     print('Iterating on Plantony n of rounds:', len(plantony.rounds), 'max rounds:', max_rounds)
 
-    while len(plantony.rounds) < max_rounds:
+#     while len(plantony.rounds) < max_rounds:
 
-        # create the round
-        plantony.create_round()
+#         # create the round
+#         plantony.create_round()
 
-        print('plantony rounds...')
-        print(len(plantony.rounds))
+#         print('plantony rounds...')
+#         print(len(plantony.rounds))
 
-        # playsound(os.getcwd()+'/media/beep_start.wav')
+#         # playsound(os.getcwd()+'/media/beep_start.wav')
 
-        with ignoreStderr():
-            utterance = mic.listen()
-        print(f"I heard: {utterance}")
+#         with ignoreStderr():
+#             utterance = mic.listen()
+#         print(f"I heard: {utterance}")
 
-        response = ai(utterance)
-        print(f"I said: {response}")
+#         response = ai(utterance)
+#         print(f"I said: {response}")
                 
-        audio_stream = generate(
-            text=f"{response}",
-            model="eleven_multilingual_v2",
-            voice=plantony.get_voice_id(),
-            stream=True
-        )
+#         audio_stream = generate(
+#             text=f"{response}",
+#             model="eleven_multilingual_v2",
+#             voice=plantony.get_voice_id(),
+#             stream=True
+#         )
                 
-        stream(audio_stream)
+#         stream(audio_stream)
 

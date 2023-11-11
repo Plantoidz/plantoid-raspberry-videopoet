@@ -6,7 +6,7 @@ import lib.plantoid.web3_utils as web3_utils
 from plantoids.plantoid import Plantony
 from utils.util import load_config, str_to_bool
 from dotenv import load_dotenv
-from lib.plantoid.event_loops import invoke_plantony, invoke_plantony_EXP, arduino_event_listen
+from lib.plantoid.event_loops import invoke_plantony, arduino_event_listen
 
 def main():
 
@@ -20,6 +20,7 @@ def main():
     max_rounds = cfg['max_rounds']
     trigger_line = cfg['TRIGGER_LINE']
     eleven_voice_id = cfg['ELEVEN_VOICE_ID']
+    interaction_mode = cfg['INTERACTION_MODE']
 
     web3_config = {
         'use_goerli': str_to_bool(cfg['USE_GOERLI']),
@@ -56,11 +57,7 @@ def main():
     plantony.setup()
 
     # add listener
-    plantony.add_listener('Touched', invoke_plantony)
-    plantony.add_listener('Touched_EXP', invoke_plantony_EXP)
-    
-    # use interaction mode
-    use_mode = 'Touched_EXP'
+    plantony.add_listener('Touched', invoke_plantony)    
 
     # check for keyboard press
     arduino_event_listen(
@@ -70,7 +67,7 @@ def main():
         trigger_line,
         max_rounds=max_rounds,
         use_arduino=use_arduino,
-        use_mode=use_mode,
+        interaction_mode=interaction_mode,
     )
     # serial_listen.listen_for_keyboard_press(ser)
 

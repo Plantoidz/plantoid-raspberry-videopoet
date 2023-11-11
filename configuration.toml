@@ -12,7 +12,7 @@ max_rounds=4
 ELEVEN_VOICE_ID="21m00Tcm4TlvDq8ikWAM" 
 # o7lPjDgzlF8ZloHzVPeK
 TRIGGER_LINE="button_pressed"
-INTERACTION_MODE="Touched_EXP"
+INTERACTION_MODE="Whisper"
 
 [audio]
 device_bias=-100
