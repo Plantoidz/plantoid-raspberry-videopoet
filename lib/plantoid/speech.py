@@ -11,7 +11,7 @@ import struct
 
 from simpleaichat import AIChat
 from whisper_mic.whisper_mic import WhisperMic
-from elevenlabs import generate, stream, set_api_key
+from elevenlabs import generate, stream, clone, set_api_key
 
 import numpy as np
 
@@ -425,7 +425,11 @@ def recognize_speech(filename):
 def listen_for_speech_whisper():
 
     with ignoreStderr():
-        mic = WhisperMic()
+        mic = WhisperMic(
+            model="base",
+            save_file=False,
+        )
+
         utterance = mic.listen()
         print(f"I heard: {utterance}")
 
@@ -441,13 +445,28 @@ def get_chat_response(chat_personality, utterance):
 
     return response
     
-def stream_audio_response(response, voice_id, callback=None):
+def stream_audio_response(response, voice_id, callback=None, clone_voice=True):
+
+    use_voice = voice_id
+
+    if clone_voice:
+
+        print('cloning voice from sample...')
+
+        # clone voice
+        cloned_voice = clone(
+            name="tmp_reco",
+            description="Testing", # Optional
+            files=[os.getcwd()+"/tmp/temp_reco.wav"],
+        )
+
+        use_voice = cloned_voice
 
     # generate audio stream   
     audio_stream = generate(
         text=f"{response}",
         model="eleven_multilingual_v2",
-        voice=voice_id,
+        voice=use_voice,
         stream=True
     )
 

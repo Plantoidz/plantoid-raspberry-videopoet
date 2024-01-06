@@ -87,6 +87,7 @@ if __name__ == "__main__":
     # PORT = cfg['SERIAL_PORT_INPUT']
 
     PORT = os.environ.get('SERIAL_PORT_INPUT')
+    print(PORT)
 
     ser = setup_serial(PORT=PORT)
     mock_arduino_keyboard_input(ser)

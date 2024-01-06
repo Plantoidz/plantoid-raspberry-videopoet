@@ -98,14 +98,14 @@ def invoke_plantony(plantony, network, interaction_mode='Default', max_rounds=4)
         print(len(plantony.rounds))
 
         print('plantony listening...')
-        audio = plantony.listen(use_whisper=use_whisper)
+        audio = plantony.listen(use_whisper=False)
 
         print('plantony responding...')
         plantony.respond(audio, use_whisper=use_whisper)
 
     # TODO: sub function without speech
     print('plantony listening...')
-    plantony.listen(use_whisper=use_whisper)
+    plantony.listen(use_whisper=False)
 
     print('plantony terminating...')
     plantony.terminate()

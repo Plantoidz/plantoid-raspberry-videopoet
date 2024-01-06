@@ -162,24 +162,29 @@ class Plantony:
 
         if use_whisper:
 
-            audio = PlantoidSpeech.listen_for_speech_whisper()
+            # directly get audio from whisper
+            message = PlantoidSpeech.listen_for_speech_whisper()
 
         else:
 
-            audio = PlantoidSpeech.listen_for_speech()
+            # get audio from microphone
+            audio_file = PlantoidSpeech.listen_for_speech()
 
-            print("Plantony listen is returning the audiofile as:  " + audio)
+            # user text received from speech recognition
+            message = PlantoidSpeech.recognize_speech(audio_file)
+
+            print("Plantony listen is returning the audiofile as:  " + message)
 
         playsound(self.acknowledge())
 
-        return audio
+        return message
 
     def respond(self, audio, use_whisper=False):
 
         def prompt_agent_and_respond(audio, callback):
             
             # user text received from speech recognition
-            user_message = PlantoidSpeech.recognize_speech(audio)
+            user_message = audio #PlantoidSpeech.recognize_speech(audio)
 
             print("I heard... " + user_message)
 
