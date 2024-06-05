@@ -9,7 +9,7 @@ import wave
 import audioop
 import struct
 
-from simpleaichat import AIChat
+# from simpleaichat import AIChat
 from whisper_mic.whisper_mic import WhisperMic
 from elevenlabs import generate, stream, clone, set_api_key
 
@@ -435,15 +435,15 @@ def listen_for_speech_whisper():
 
         return utterance
     
-def get_chat_response(chat_personality, utterance):
+# def get_chat_response(chat_personality, utterance):
 
-    # TODO: assess performance of instantiation
-    ai_chat = AIChat(system=chat_personality, api_key=OPENAI_API_KEY, model="gpt-4-1106-preview")
+#     # TODO: assess performance of instantiation
+#     ai_chat = AIChat(system=chat_personality, api_key=OPENAI_API_KEY, model="gpt-4-1106-preview")
 
-    response = ai_chat(utterance)
-    print(f"I said: {response}")
+#     response = ai_chat(utterance)
+#     print(f"I said: {response}")
 
-    return response
+#     return response
     
 def stream_audio_response(response, voice_id, callback=None, clone_voice=True):
 

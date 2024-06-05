@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 import json
 from dotenv import load_dotenv
-from pinata import Pinata
+# from pinata import Pinata
 
 import lib.plantoid.eden as eden
 
@@ -229,7 +229,7 @@ def create_seed_metadata(network, token_Id):
     print('call create metadata.')
 
     # create a pinata object
-    pinata = Pinata(PINATA_API_KEY, PINATA_API_SECRET, PINATA_JWT)
+    # pinata = Pinata(PINATA_API_KEY, PINATA_API_SECRET, PINATA_JWT)
 
     # get the path
     path = network.path
@@ -263,7 +263,8 @@ def create_seed_metadata(network, token_Id):
 
         print("movie found, pinning to IPFS")
 
-        response = pinata.pin_file(movie_path)
+        # response = pinata.pin_file(movie_path)
+        response = ""
         print('pinata response:', response)
 
         # TODO: this should probably check for a response code
@@ -304,12 +305,14 @@ def create_seed_metadata(network, token_Id):
 
 def pin_metadata_to_ipfs(metadata_path):
 
-    pinata = Pinata(PINATA_API_KEY, PINATA_API_SECRET, PINATA_JWT)
+    # pinata = Pinata(PINATA_API_KEY, PINATA_API_SECRET, PINATA_JWT)
 
-    print('metadata is', metadata_path)
+    # print('metadata is', metadata_path)
 
-    response = pinata.pin_file(metadata_path)
-    print('pinata response:', response)
+    # response = pinata.pin_file(metadata_path)
+    # print('pinata response:', response)
+
+    response = ''
 
     is_duplicate = False
 

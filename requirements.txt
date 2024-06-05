@@ -3,6 +3,8 @@ web3
 python-dotenv
 wave
 openai
+elevenlabs
+whisper-mic
 requests
 playsound
 pydub
@@ -12,8 +14,8 @@ nltk
 speechrecognition
 #scipy
 pyserial
-#mutagen
-#regex_spm
+mutagen
+regex_spm
 toml
 pygame
 keyboard
