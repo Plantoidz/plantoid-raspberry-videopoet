@@ -70,28 +70,29 @@ def plantoid_event_listen(
             
 
             print('checking if button pressed...')
-            print('serial wait count:', ser.in_waiting)
-            if ser.in_waiting > 0:
 
-                try:
+            try:
 
-                    line = ser.readline().decode('utf-8').strip()
-                    print("line ====", line)
-                    print("pattern ============= ", pattern)
+                    print('serial wait count:', ser.in_waiting)
+                    if ser.in_waiting > 0:
 
-                    condition = bool(re.fullmatch(pattern, line))
-                    print("condition", condition)
+                        line = ser.readline().decode('utf-8').strip()
+                        print("line ====", line)
+                        print("pattern ============= ", pattern)
 
-                    if condition == True:
+                        condition = bool(re.fullmatch(pattern, line))
+                        print("condition", condition)
 
-                        # Trigger plantony interaction
-                        print("Button was pressed, Invoking Plantony!")
-                        plantony.trigger('Touched', plantony, web3config["goerli"], max_rounds=max_rounds)  ## FIX ME
+                        if condition == True:
 
-                        # Clear the buffer after reading to ensure no old "button_pressed" events are processed.
-                        ser.reset_input_buffer()
+                            # Trigger plantony interaction
+                            print("Button was pressed, Invoking Plantony!")
+                            plantony.trigger('Touched', plantony, web3config["goerli"], max_rounds=max_rounds)  ## FIX ME
 
-                except UnicodeDecodeError:
+                            # Clear the buffer after reading to ensure no old "button_pressed" events are processed.
+                            ser.reset_input_buffer()
+
+            except UnicodeDecodeError:
                     
                     print("Received a line that couldn't be decoded!")
 
